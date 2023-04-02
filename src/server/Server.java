@@ -1,7 +1,9 @@
 package server;
 
 import javafx.util.Pair;
+import server.models.Course;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -91,6 +93,21 @@ public class Server {
      @param arg la session pour laquelle on veut récupérer la liste des cours
      */
     public void handleLoadCourses(String arg) {
+        try(ObjectInputStream is = new ObjectInputStream(new FileInputStream("data/cours.txt"))){
+
+
+
+            Course cours = (Course) is.readObject();
+            System.out.println(cours.toString());
+        }
+        catch(IOException e){
+            System.out.println("Erreur à la lecture du fichier");
+            e.printStackTrace();
+        }
+        catch(ClassNotFoundException e){
+            System.out.println("La classe lue n'existe pas dans le programme");
+        }
+
         // TODO: implémenter cette méthode
     }
 

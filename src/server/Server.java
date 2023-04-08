@@ -2,11 +2,9 @@ package server;
 
 import javafx.util.Pair;
 import server.models.Course;
+import server.models.RegistrationForm;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -56,7 +54,9 @@ public class Server {
 
     public void listen() throws IOException, ClassNotFoundException {
         String line;
-        if ((line = this.objectInputStream.readObject().toString()) != null) {
+        Object obj = this.objectInputStream.readObject();
+        line = obj.toString();
+        if (line != null) {
             Pair<String, String> parts = processCommandLine(line);
             String cmd = parts.getKey();
             String arg = parts.getValue();
@@ -77,6 +77,14 @@ public class Server {
         client.close();
     }
 
+    /**
+     * Gérer les commandes reçue en paramètre, si la commande reçue est la commande d'inscription ou de chargement,
+     * la fonction relait le travail à la méthode spécifique qui gère la commande dépendemment du cas.
+     * Si la commande ne correspond à aucune des deux prédéfinies, la fonction ne fait rien
+     * @param cmd String du nom de la commande à traiter
+     * @param arg String argument
+     */
+
     public void handleEvents(String cmd, String arg) {
         if (cmd.equals(REGISTER_COMMAND)) {
             handleRegistration();
@@ -86,29 +94,49 @@ public class Server {
     }
 
     /**
-     Lire un fichier texte contenant des informations sur les cours et les transofmer en liste d'objets 'Course'.
+     Lire un fichier texte contenant des informations sur les cours et les transorfmer en liste d'objets 'Course'.
      La méthode filtre les cours par la session spécifiée en argument.
      Ensuite, elle renvoie la liste des cours pour une session au client en utilisant l'objet 'objectOutputStream'.
      La méthode gère les exceptions si une erreur se produit lors de la lecture du fichier ou de l'écriture de l'objet dans le flux.
      @param arg la session pour laquelle on veut récupérer la liste des cours
      */
     public void handleLoadCourses(String arg) {
-        try(ObjectInputStream is = new ObjectInputStream(new FileInputStream("data/cours.txt"))){
+        try{
 
+            //DataInputStream dIS = new DataInputStream("data/cours.txt");
+            //ObjectInputStream is = new ObjectInputStream(new FileInputStream("data/cours.txt"));
 
+            BufferedReader bReader = new BufferedReader(new FileReader("src/server/data/cours.txt"));
+            ArrayList<Course> listeCoursDispo = new ArrayList<>();
 
-            Course cours = (Course) is.readObject();
-            System.out.println(cours.toString());
+            String s;
+            while((s = bReader.readLine()) != null){
+                String[] parts = s.split("\t");
+                if (parts[2].equals(arg)){
+                    listeCoursDispo.add(new Course(parts[1], parts[0], parts[2] ));
+                }
+
+            }
+
+            System.out.println("Les cours disponibles pour la session " + arg + " sont:");
+            for(Course cours: listeCoursDispo){
+                System.out.println(cours.toString());
+            }
+
+            objectOutputStream.writeObject(listeCoursDispo);
+            objectOutputStream.flush();
+            bReader.close();
+            //run();
+
         }
         catch(IOException e){
             System.out.println("Erreur à la lecture du fichier");
             e.printStackTrace();
         }
-        catch(ClassNotFoundException e){
-            System.out.println("La classe lue n'existe pas dans le programme");
-        }
+//        catch(ClassNotFoundException e){
+//            System.out.println("La classe lue n'existe pas dans le programme");
+//        }
 
-        // TODO: implémenter cette méthode
     }
 
     /**
@@ -117,6 +145,25 @@ public class Server {
      La méthode gére les exceptions si une erreur se produit lors de la lecture de l'objet, l'écriture dans un fichier ou dans le flux de sortie.
      */
     public void handleRegistration() {
-        // TODO: implémenter cette méthode
+        try{
+
+            RegistrationForm ins = (RegistrationForm) objectInputStream.readObject();
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter("src/server/data/inscription.txt"));
+
+            String tab = "\t";
+
+            String inscription = ins.getCourse().getSession() + tab + ins.getCourse().toString() + tab +
+                    ins.getMatricule() + tab + ins.getPrenom() + tab + ins.getNom() + tab + ins.getEmail();
+
+            writer.write(inscription);
+
+            System.out.println("Nouvelle inscription : \n" + inscription);
+
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
     }
 }

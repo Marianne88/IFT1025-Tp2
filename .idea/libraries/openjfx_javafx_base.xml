@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="openjfx.javafx.base" type="repository">
-    <properties maven-id="org.openjfx:javafx-base:20-ea+2" />
+    <properties maven-id="org.openjfx:javafx-base:19" />
     <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-base/20-ea+2/javafx-base-20-ea+2.jar!/" />
-      <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-base/20-ea+2/javafx-base-20-ea+2-win.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-base/19/javafx-base-19.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-base/19/javafx-base-19-win.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

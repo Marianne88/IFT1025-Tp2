@@ -20,21 +20,12 @@ public class Client {
     public void run(){
 
         try{
-            //Socket cS = new Socket("127.0.0.1", 1337);
+
             connect();
 
-            //ObjectOutputStream objOutStream = new ObjectOutputStream(cS.getOutputStream());
-
-            //ObjectInputStream objInStream = new ObjectInputStream(cS.getInputStream());
-
-            //OutputStreamWriter os = new OutputStreamWriter(objOutStream);
-
-
-            //this.inscription(null);
             this.choixCours();
 
-            disconnect();
-            //cS.connect("127.0.0.1", 1337);
+            //disconnect();
 
         }
         catch (ConnectException x){
@@ -121,14 +112,17 @@ public class Client {
 
 
                 if (choixIntermediaire.equals("1")){
-//                    connect();
                     this.choixCours();
                 }
                 else if (choixIntermediaire.equals("2")){
-//                    connect();
                     Object commandeIns = new String("INSCRIRE");
+                    objOutStream.writeObject(commandeIns);
                     objOutStream.writeObject(this.inscription(listeCours));
                     objOutStream.flush();
+                }
+                else{
+                    System.out.println("choix invlaide, veuillez sélectionner 1 ou 2");
+                    choixIntermediaire = sc.nextLine();
                 }
 
         }
@@ -146,18 +140,24 @@ public class Client {
         System.out.print("Veuillez saisir votre nom: ");
         String nom = sc.nextLine();
 
-        //Faire vérification de courriel
+
         System.out.print("Veuillez saisir votre email: ");
         String email = sc.nextLine();
 
+        // Vérification du courriel
+        while (email.length() < 14 || ! email.substring(email.length()-13).equals("@umontreal.ca")){
+            System.out.print("Courriel invalide, veuillez entrer une adresse courrielle valide:");
+            email = sc.nextLine();
+        }
 
-        //Verifier que juste chiffre
+
+
         System.out.print("Veuillez saisir votre matricule: ");
         String matricule = sc.nextLine();
 
-        while (matricule.length() != 8){
-            System.out.println("Matricule incorrect, veuillez réessayer");
-            System.out.print("Veuillez saisir votre matricule: ");
+        // Vérification du matricule
+        while (matricule.length() != 8 && matricule.matches("^[0-9]+$")){
+            System.out.print("Matricule incorrect, veuillez réessayer, veuillez saisir un matricule valide:");
             matricule = sc.nextLine();
         }
 
@@ -166,17 +166,16 @@ public class Client {
 
 
         Course coursInscrire = trouverCours(listeCours, code);
-        if (coursInscrire == null){
-            System.out.println("Cours entré invalide");
-            return null;
+        while (coursInscrire == null){
+            System.out.print("Cours entré invalide, veuillez entrer un cours qui est disponible pour la session sélectionnée:");
+            code = sc.nextLine();
+            coursInscrire = trouverCours(listeCours, code);
         }
 
-        //connect();
 
         System.out.println("Félicitation! Inscription réussie de " + prenom + " au cours " + code);
 
         return new RegistrationForm(prenom, nom, email, matricule, coursInscrire);
-        //return new RegistrationForm(prenom, nom, email, matricule, new Course("Prog1", "IFT1015", "Automne" ));
 
     }
 

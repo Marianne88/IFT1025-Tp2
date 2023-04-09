@@ -153,10 +153,11 @@ public class Server {
 
             String tab = "\t";
 
-            String inscription = ins.getCourse().getSession() + tab + ins.getCourse().toString() + tab +
+            String inscription = ins.getCourse().getSession() + tab + ins.getCourse().getCode() + tab +
                     ins.getMatricule() + tab + ins.getPrenom() + tab + ins.getNom() + tab + ins.getEmail();
 
             writer.write(inscription);
+            writer.close();
 
             System.out.println("Nouvelle inscription : \n" + inscription);
 

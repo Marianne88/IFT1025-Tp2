@@ -1,6 +1,7 @@
 package client;
 
 import javafx.application.Application;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -31,13 +32,16 @@ public class ClientJavaFX extends Application {
 
             BorderPane pane = new BorderPane();
             pane.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
-            //Scene scene = new Scene(pane,600,380);
-
-            VBox gauche = new VBox (getVBox1(), getVBox2());
-            pane.setLeft(gauche);
-            pane.setRight(getVBox3());
-
             Scene scene = new Scene(pane,600,380);
+            //Scene scene = new Scene(pane);
+
+            VBox gauche = new VBox (getVBox1(scene.getWidth()/2, scene.getHeight()*0.9), getVBox2(scene.getWidth()/2, scene.getHeight()*0.1));
+            pane.setLeft(gauche);
+            VBox droite = new VBox(getVBox3(scene.getWidth()/2, scene.getHeight()));
+            pane.setRight(droite);
+
+            //Scene scene = new Scene(pane,600,380);
+            //Scene scene = new Scene(pane);
 
 
             primaryStage.setTitle("Inscription UdeM");
@@ -51,12 +55,13 @@ public class ClientJavaFX extends Application {
         }
     }
 
-    private VBox getVBox1() {
+    private VBox getVBox1(double largeur, double hauteur) {
 
 
         VBox vBox1 = new VBox();
 
-        vBox1.setPrefSize(300,350);
+        //vBox1.setPrefSize(300,350);
+        vBox1.setPrefSize(largeur,hauteur);
         vBox1.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
         vBox1.setMargin(vBox1, new Insets(3,3,1,3));
 
@@ -72,13 +77,13 @@ public class ClientJavaFX extends Application {
         return vBox1;
 
     }
-    private VBox getVBox2() {
+    private VBox getVBox2(double largeur, double hauteur) {
 
         // Box Style
 
         VBox vBox2 = new VBox();
 
-        vBox2.setPrefSize(300,40);
+        vBox2.setPrefSize(largeur,hauteur);
         vBox2.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
         vBox2.setMargin(vBox2, new Insets(1,3,3,3));
 
@@ -135,7 +140,7 @@ public class ClientJavaFX extends Application {
 
     }
 
-    private VBox getVBox3() {
+    private VBox getVBox3(double largeur, double hauteur) {
 
         // box style
 
@@ -144,9 +149,10 @@ public class ClientJavaFX extends Application {
         //vBox3.setPrefHeight(Double.MAX_VALUE);
 
 
-        vBox3.setPrefSize(300,380);
+        //vBox3.setPrefSize(300,380);
+        vBox3.setPrefSize(largeur, hauteur);
         vBox3.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
-        vBox3.setMargin(vBox3, new Insets(1,3,3,3));
+        vBox3.setMargin(vBox3, new Insets(3,3,3,3));
 
         vBox3.setPadding(new Insets(8,8,8,8));
 
@@ -157,6 +163,66 @@ public class ClientJavaFX extends Application {
         titre2.setAlignment(Pos.CENTER);
         titre2.setFont(Font.font("Amble CN",18));
         vBox3.getChildren().add(titre2);
+
+        //
+        GridPane gridPane = new GridPane();
+        gridPane.setMaxWidth(Double.MAX_VALUE);
+        gridPane.setAlignment(Pos.CENTER);
+        gridPane.setPadding(new Insets(40,20,40,20));
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
+
+        ColumnConstraints colone1 = new ColumnConstraints(50,50,Double.MAX_VALUE);
+        colone1.setHalignment(HPos.RIGHT);
+
+        ColumnConstraints colone2 = new ColumnConstraints(125,125,Double.MAX_VALUE);
+        //colone2.setHgrow(Priority.ALWAYS);
+        colone2.setHalignment(HPos.LEFT);
+
+        gridPane.getColumnConstraints().addAll(colone1,colone2);
+
+        Label prenom = new Label("Prénom");
+        GridPane.setHalignment(prenom, HPos.LEFT);
+        gridPane.add(prenom,0,1);
+        TextField prenomText = new TextField();
+        prenomText.setPrefHeight(15);
+        gridPane.add(prenomText, 1, 1);
+
+
+        Label nom = new Label("Nom");
+        GridPane.setHalignment(nom, HPos.LEFT);
+        gridPane.add(nom,0,2);
+        TextField nomText = new TextField();
+        nomText.setPrefHeight(15);
+        gridPane.add(nomText, 1, 2);
+
+        Label email = new Label("Email");
+        GridPane.setHalignment(email, HPos.LEFT);
+        gridPane.add(email,0,3);
+        TextField emailText = new TextField();
+        emailText.setPrefHeight(15);
+        gridPane.add(emailText, 1, 3);
+
+        Label matricule = new Label("Matricule");
+        GridPane.setHalignment(matricule, HPos.LEFT);
+        gridPane.add(matricule,0,4);
+        TextField matriculeText = new TextField();
+        matriculeText.setPrefHeight(15);
+        gridPane.add(matriculeText, 1, 4);
+
+
+
+        Button bouton = new Button("envoyer");
+
+        GridPane.setHalignment(bouton, HPos.CENTER);
+        gridPane.add(bouton,1,5);
+
+
+
+        //vBox3.getChildren().add(button);
+
+        vBox3.getChildren().add(gridPane);
+
 
 
         return vBox3;

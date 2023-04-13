@@ -19,11 +19,11 @@ public class Controleur {
 
     private ArrayList<Course> listeCours;
 
-    public void run(){
+ //   public void run(){
 
         //      try{
 
-        connect();
+ ///       connect();
 
         //     }
         //     catch (ConnectException x){
@@ -34,10 +34,10 @@ public class Controleur {
         //        e.printStackTrace();
         //  }
 
-    }
+ //   }
 
 
-    private void connect() {
+    private void connect(){
         try {
             cS = new Socket("127.0.0.1", 1337);
 
@@ -50,6 +50,11 @@ public class Controleur {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
+    }
+    public Controleur() {
+       // connect();
     }
 
     public void disconnect(){
@@ -67,6 +72,7 @@ public class Controleur {
 
     public ArrayList<Course> getListeCours(String session) {
         try{
+            connect();
             if (session.equals("Été")){session = "Ete";}
 
             Object commande = new String("CHARGER " + session);
@@ -74,13 +80,17 @@ public class Controleur {
             objOutStream.flush();
             listeCours = (ArrayList<Course>) objInStream.readObject();
 
+            System.out.println("Liste cours est " + listeCours);
+
             return listeCours;
 
         }
         catch(IOException e){
+            System.out.println("IOException");
             return null;
         }
         catch (ClassNotFoundException c){
+            System.out.println("ClassnotFound exception");
             return null;
         }
     }

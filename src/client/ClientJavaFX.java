@@ -61,14 +61,16 @@ public class ClientJavaFX extends Application {
             //Table View
 
             VBox table = new VBox();
-            TableView tableView = new TableView();
-            //TableView<Course> tableView = new TableView<>();
-            //TableColumn<Course,String> code = new TableColumn("Code");
+            //TableView tableView = new TableView();
+            TableView<Course> tableView = new TableView<>();
+            TableColumn<Course,String> code = new TableColumn("Code");
+            code.setCellValueFactory(new PropertyValueFactory<>("code"));
             //TableColumn<String, String> code = new TableColumn("Code");
-            TableColumn code = new TableColumn();
+            //TableColumn code = new TableColumn();
             code.prefWidthProperty().bind(tableView.widthProperty().multiply(0.4));
-            //TableColumn<Course,String> cours = new TableColumn("Cours");
-            TableColumn cours = new TableColumn();
+            TableColumn<Course,String> cours = new TableColumn("Cours");
+            cours.setCellValueFactory(new PropertyValueFactory<>("name"));
+            //TableColumn cours = new TableColumn();
             //TableColumn<String, String> cours = new TableColumn("Cours");
 
             cours.prefWidthProperty().bind(tableView.widthProperty().multiply(0.6));
@@ -136,10 +138,16 @@ public class ClientJavaFX extends Application {
             buttonGroup.getChildren().add(button);
 
             charger.setOnAction(actionEvent -> {
+                System.out.println(menuButton.getText());
                 ArrayList<Course> listeCours = controleur.getListeCours(menuButton.getText());
-                for (Course coursAAfficher : listeCours){
+                System.out.println(listeCours);
+                tableView.getItems().clear();
+                //for (Course coursAAfficher : listeCours){
+                for (int i = 0; i < listeCours.size(); i ++){
 
-                    tableView.getItems().add(coursAAfficher.getCode());
+
+                   // tableView.getItems().add(coursAAfficher.getCode());
+                    tableView.getItems().add(listeCours.get(i));
                 }
 
             });

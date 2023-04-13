@@ -12,7 +12,14 @@ import java.util.Arrays;
 
 public class Server {
 
+    /**
+     * Commande à utiliser pour appeler la fonction handleRegistration()
+     */
     public final static String REGISTER_COMMAND = "INSCRIRE";
+
+    /**
+     * Commande à utiliser pour appeler la fonction handleLoadCourses
+     */
     public final static String LOAD_COMMAND = "CHARGER";
     private final ServerSocket server;
     private Socket client;
@@ -20,22 +27,44 @@ public class Server {
     private ObjectOutputStream objectOutputStream;
     private final ArrayList<EventHandler> handlers;
 
+    /**
+     * Constructeur de la classe serveur
+     * Ouvre le ServerSocket sur le port passé en paramétre et initialise les handlers comme arraylist de EventHandler (interface fonctionnelle)
+     * et ajoute les deux commandes prédéfinies dans la liste de handlers (charger les cours disponible et s'inscrire à un cours)
+     * @param port numéro de port sur lequel le serveur se connecte
+     * @throws IOException erreur lors de la lecture ou écriture de fichiers
+     */
     public Server(int port) throws IOException {
         this.server = new ServerSocket(port, 1);
         this.handlers = new ArrayList<EventHandler>();
         this.addEventHandler(this::handleEvents);
     }
 
+    /**
+     * Ajouter un EventHandler à la liste handlers de la classe
+     * @param h EventHandler à ajouter
+     */
     public void addEventHandler(EventHandler h) {
         this.handlers.add(h);
     }
 
+    /**
+     * Appeler les handles avec la commande et l'argument mis en paramètre
+     * @param cmd commande à envoyer aux handlers (String)
+     * @param arg argument à passer en paramètre au handler (String)
+     */
     private void alertHandlers(String cmd, String arg) {
         for (EventHandler h : this.handlers) {
             h.handle(cmd, arg);
         }
     }
 
+    /**
+     * Fonction qui démarre le serveur et attend qu'un client se connecte. Lorsque le client est connecté, la fonction crée
+     * un buffered writer et reader pour recevoir et envoyer des information au client
+     * Lorsque le serveur reçoit une commande du client, le serveur la traite avec la fonction listen puis déconnecte se déconnecte.
+     * Cette boucle se répète tant que le serveur et le client sont connectés
+     */
     public void run() {
         while (true) {
             try {
@@ -52,6 +81,13 @@ public class Server {
         }
     }
 
+    /**
+     * La fonction lit l'information envoyée par le client dans le InputStream si celui-ci est non-nul. La fonction appelle
+     * la fonction alerte les handlers pour déterminer si la commande envoyée correspond à un handler qui existe et
+     * si c'est le cas, la focntion correspondante est appelée
+     * @throws IOException erreur à la lecture ou l'écriture du fichier pour la lecture des cours disponibles ou pour l'écriture dans le fichier d'inscriptions
+     * @throws ClassNotFoundException erreur dans la lecture d'un objet dont la classe n'est pas connue
+     */
     public void listen() throws IOException, ClassNotFoundException {
         String line;
         Object obj = this.objectInputStream.readObject();
@@ -64,6 +100,13 @@ public class Server {
         }
     }
 
+    /**
+     * La fonction prend en paramtre une ligne et la sépare de sorte à créer une paire de strings dont le premier terme correspond à la commande
+     * et le deuxième correspond à l'argument (qui peut être composé de plusieurs mots).
+     * La commnde correspond au premier mot dans la ligne de commande passée en paramètre et l'argument correspond au reste de la ligne.
+     * @param line Strign qui correspond à la ligne de commande qui doit être traitée.
+     * @return une paire de string dont le premier terme correspond à la commande et le deuxième terme correspond à l'argument
+     */
     public Pair<String, String> processCommandLine(String line) {
         String[] parts = line.split(" ");
         String cmd = parts[0];
@@ -71,6 +114,10 @@ public class Server {
         return new Pair<>(cmd, args);
     }
 
+    /**
+     * Fermeture des stream et deconnection du client
+     * @throws IOException erreur à la lecture ou l'écriture du fichier pour la lecture des cours disponibles ou pour l'écriture dans le fichier d'inscriptions
+     */
     public void disconnect() throws IOException {
         objectOutputStream.close();
         objectInputStream.close();
@@ -133,9 +180,6 @@ public class Server {
             System.out.println("Erreur à la lecture du fichier");
             e.printStackTrace();
         }
-//        catch(ClassNotFoundException e){
-//            System.out.println("La classe lue n'existe pas dans le programme");
-//        }
 
     }
 
@@ -149,12 +193,13 @@ public class Server {
 
             RegistrationForm ins = (RegistrationForm) objectInputStream.readObject();
 
-            BufferedWriter writer = new BufferedWriter(new FileWriter("src/server/data/inscription.txt"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("src/server/data/inscription.txt", true));
 
             String tab = "\t";
 
+
             String inscription = ins.getCourse().getSession() + tab + ins.getCourse().getCode() + tab +
-                    ins.getMatricule() + tab + ins.getPrenom() + tab + ins.getNom() + tab + ins.getEmail();
+                    ins.getMatricule() + tab + ins.getPrenom() + tab + ins.getNom() + tab + ins.getEmail() + "\n";
 
             writer.write(inscription);
             writer.close();
@@ -162,8 +207,12 @@ public class Server {
             System.out.println("Nouvelle inscription : \n" + inscription);
 
         }
-        catch(Exception e){
+        catch(IOException e){
+            System.out.println("Erreur à la lecture du fichier");
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.out.println("Erreur, la classe n'existe pas.");
+            throw new RuntimeException(e);
         }
 
     }

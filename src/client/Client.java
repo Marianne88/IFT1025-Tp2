@@ -25,7 +25,6 @@ public class Client {
 
             this.choixCours();
 
-            //disconnect();
 
         }
         catch (ConnectException x){
@@ -35,6 +34,7 @@ public class Client {
             e.printStackTrace();
         }
         catch(ClassNotFoundException e){
+            System.out.println("La classe n'existe pas.");
             e.printStackTrace();
         }
 
@@ -45,12 +45,11 @@ public class Client {
             cS = new Socket("127.0.0.1", 1337);
 
             objOutStream = new ObjectOutputStream(cS.getOutputStream());
-
             objInStream = new ObjectInputStream(cS.getInputStream());
 
 
         } catch (ConnectException x) {
-            System.out.println("Connexion impossible aui port 1337: pas de serveur.");
+            System.out.println("Connexion impossible au port 1337: pas de serveur.");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -90,7 +89,7 @@ public class Client {
             }
 
             if (sessionChoisie != "") {
-                System.out.println("Les cours offerts pour la session " + sessionChoisie + " sont:\n");
+                System.out.println("\nLes cours offerts pour la session " + sessionChoisie + " sont:\n");
 
                 Object commande = new String("CHARGER " + sessionChoisie);
                 objOutStream.writeObject(commande);
@@ -103,7 +102,7 @@ public class Client {
                 }
 
 
-                System.out.print("Choix\n1. Consulter les cours pour une autre session\n2. Inscription a un cours\nChoix:");
+                System.out.print("\nChoix\n1. Consulter les cours pour une autre session\n2. Inscription a un cours\nChoix:");
 
                 disconnect();
                 connect();
@@ -134,7 +133,7 @@ public class Client {
     public RegistrationForm inscription(ArrayList<Course> listeCours){
 
         Scanner sc = new Scanner(System.in);
-        System.out.print("Veuillez saisir votre prénom: ");
+        System.out.print("\nVeuillez saisir votre prénom: ");
         String prenom = sc.nextLine();
 
         System.out.print("Veuillez saisir votre nom: ");
@@ -173,7 +172,7 @@ public class Client {
         }
 
 
-        System.out.println("Félicitation! Inscription réussie de " + prenom + " au cours " + code);
+        System.out.println("Félicitations! Inscription réussie de " + prenom + " au cours " + code);
 
         return new RegistrationForm(prenom, nom, email, matricule, coursInscrire);
 

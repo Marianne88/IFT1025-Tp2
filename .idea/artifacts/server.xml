@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="server">
+    <output-path>$PROJECT_DIR$/out/artifacts/server</output-path>
+    <root id="archive" name="server.jar">
+      <element id="module-output" name="IFT1025-Tp2" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-base/20-ea+2/javafx-base-20-ea+2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-base/20-ea+2/javafx-base-20-ea+2-win.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/diirt/javafx/javafx/3.1.7/javafx-3.1.7.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

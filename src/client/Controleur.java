@@ -1,5 +1,6 @@
 package client;
 
+
 import server.models.Course;
 import server.models.RegistrationForm;
 
@@ -54,7 +55,7 @@ public class Controleur {
 
     }
     public Controleur() {
-       // connect();
+       //connect();
     }
 
     public void disconnect(){
@@ -97,6 +98,8 @@ public class Controleur {
 
     public RegistrationForm inscription(String prenom, String nom, String email, String matricule, String code) throws IOException {
 
+        connect();
+
         //Trouver  quoi faire si matricule, courriel ou code cours pas bon
         if (email.length() < 14 || ! email.substring(email.length()-13).equals("@umontreal.ca")) {
             return null;
@@ -109,6 +112,8 @@ public class Controleur {
             //System.out.print("Matricule incorrect, veuillez réessayer, veuillez saisir un matricule valide:");
         }
 
+
+        //Course coursInscrire = new Course()
         Course coursInscrire = trouverCours(listeCours, code);
         if (coursInscrire == null){
             return null;
@@ -129,6 +134,7 @@ public class Controleur {
     private Course trouverCours(ArrayList<Course> listeCours, String codeATrouver){
         for (Course cours: listeCours){
             if (cours.getCode().equals(codeATrouver)){
+                System.out.println(cours);
                 return cours;
             }
         }

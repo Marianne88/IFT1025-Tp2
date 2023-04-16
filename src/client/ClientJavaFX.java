@@ -18,7 +18,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import server.models.Course;
+import server.models.RegistrationForm;
 
+import java.io.IOException;
 import java.util.ArrayList;
 //test
 
@@ -31,71 +33,64 @@ public class ClientJavaFX extends Application {
         fenetrePrincipale(primaryStage);
     }
 
+
+    /**
+     * Assemblage des elements dans l'interface graphique
+     * @param primaryStage
+     */
     void fenetrePrincipale(Stage primaryStage) {
 
         try{
+            Stage stage = new Stage();
+            stage.setMaxWidth(600);
+            stage.setMaxHeight(380);
 
             BorderPane pane = new BorderPane();
             pane.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
             Scene scene = new Scene(pane,600,380);
-            //Scene scene = new Scene(pane);
 
-            /////////////////////
+
+            //// vBox1 : Section d'affichage des cours ////
 
             VBox vBox1 = new VBox();
-
-            //vBox1.setPrefSize(300,350);
             vBox1.setPrefSize(scene.getWidth()/2, scene.getHeight()*0.9);
             vBox1.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
             vBox1.setMargin(vBox1, new Insets(3,3,1,3));
-
             vBox1.setPadding(new Insets(8,8,8,8));
 
-            //label
+            // Label
             Label titre1 = new Label ("Liste des cours");
             titre1.setMaxWidth(Double.MAX_VALUE);
             titre1.setAlignment(Pos.TOP_CENTER);
             titre1.setFont(Font.font("Amble CN",18));
             vBox1.getChildren().add(titre1);
 
-            //Table View
+            // Table View
 
             VBox table = new VBox();
-            //TableView tableView = new TableView();
             TableView<Course> tableView = new TableView<>();
+
             TableColumn<Course,String> code = new TableColumn("Code");
             code.setCellValueFactory(new PropertyValueFactory<>("code"));
-            //TableColumn<String, String> code = new TableColumn("Code");
-            //TableColumn code = new TableColumn();
             code.prefWidthProperty().bind(tableView.widthProperty().multiply(0.4));
+
             TableColumn<Course,String> cours = new TableColumn("Cours");
             cours.setCellValueFactory(new PropertyValueFactory<>("name"));
-            //TableColumn cours = new TableColumn();
-            //TableColumn<String, String> cours = new TableColumn("Cours");
-
             cours.prefWidthProperty().bind(tableView.widthProperty().multiply(0.6));
 
-
-
-
             tableView.getColumns().addAll(code,cours);
-
             table.getChildren().add(tableView);
-
             vBox1.getChildren().add(table);
 
 
 
-            //////////////////////
-
+            //// vBox2 : Section du choix de session ////
 
 
             VBox vBox2 = new VBox();
-
             vBox2.setPrefSize(scene.getWidth()/2, scene.getHeight()*0.1);
             vBox2.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
             vBox2.setMargin(vBox2, new Insets(1,3,3,3));
-
             vBox2.setPadding(new Insets(10,10,10,10));
 
             HBox buttonGroup = new HBox(50);
@@ -104,8 +99,6 @@ public class ClientJavaFX extends Application {
 
             MenuButton menuButton = new MenuButton();
             menuButton.setPrefWidth(100);
-            //Font fontMenuButton = new Font(16);
-            //menuButton.setFont(fontMenuButton);
 
             MenuItem menuChoix1 = new MenuItem("Hiver");
             MenuItem menuChoix2 = new MenuItem("Été");
@@ -128,36 +121,29 @@ public class ClientJavaFX extends Application {
 
             buttonGroup.getChildren().add(menuButton);
 
-            //vBox2.getChildren().add(menu);
 
+            // Boutton charger
 
-            // Boutton
-            HBox button = new HBox();
-            Button charger = new Button("charger");
-            button.getChildren().add(charger);
-            buttonGroup.getChildren().add(button);
+            HBox boutton1 = new HBox();
+            Button bouttonCharger = new Button("charger");
+            boutton1.getChildren().add(bouttonCharger);
+            buttonGroup.getChildren().add(bouttonCharger);
 
-            charger.setOnAction(actionEvent -> {
+            bouttonCharger.setOnAction(actionEvent -> {
                 System.out.println(menuButton.getText());
                 ArrayList<Course> listeCours = controleur.getListeCours(menuButton.getText());
                 System.out.println(listeCours);
                 tableView.getItems().clear();
-                //for (Course coursAAfficher : listeCours){
+
                 for (int i = 0; i < listeCours.size(); i ++){
-
-
-                   // tableView.getItems().add(coursAAfficher.getCode());
                     tableView.getItems().add(listeCours.get(i));
                 }
 
             });
 
 
+            // Positionnement du buttonGroup
 
-            //button.setAlignment(Pos.CENTER_RIGHT);
-            //vBox2.getChildren().add(button);
-
-            //Positionnement
             buttonGroup.setMaxWidth(Double.MAX_VALUE);
             buttonGroup.setMaxHeight(Double.MAX_VALUE);
             buttonGroup.setAlignment(Pos.CENTER);
@@ -165,29 +151,25 @@ public class ClientJavaFX extends Application {
 
 
 
-            //////////////////////////
+            //// vBox 3 : Section d'informations personnelles ////
 
             VBox vBox3 = new VBox();
-            //vBox3.setPrefWidth(Double.MAX_VALUE/2);
-            //vBox3.setPrefHeight(Double.MAX_VALUE);
-
-
-            //vBox3.setPrefSize(300,380);
             vBox3.setPrefSize(scene.getWidth()/2, scene.getHeight());
             vBox3.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
             vBox3.setMargin(vBox3, new Insets(3,3,3,3));
-
             vBox3.setPadding(new Insets(8,8,8,8));
 
 
-            //label
+            // Label
+
             Label titre2 = new Label ("Formulaire d'inscription");
             titre2.setMaxWidth(Double.MAX_VALUE);
             titre2.setAlignment(Pos.CENTER);
             titre2.setFont(Font.font("Amble CN",18));
             vBox3.getChildren().add(titre2);
 
-            //
+            // GridPane
+
             GridPane gridPane = new GridPane();
             gridPane.setMaxWidth(Double.MAX_VALUE);
             gridPane.setAlignment(Pos.CENTER);
@@ -199,10 +181,10 @@ public class ClientJavaFX extends Application {
             colone1.setHalignment(HPos.RIGHT);
 
             ColumnConstraints colone2 = new ColumnConstraints(125,125,Double.MAX_VALUE);
-            //colone2.setHgrow(Priority.ALWAYS);
             colone2.setHalignment(HPos.LEFT);
 
             gridPane.getColumnConstraints().addAll(colone1,colone2);
+
 
             Label prenom = new Label("Prénom");
             GridPane.setHalignment(prenom, HPos.LEFT);
@@ -210,7 +192,6 @@ public class ClientJavaFX extends Application {
             TextField prenomText = new TextField();
             prenomText.setPrefHeight(15);
             gridPane.add(prenomText, 1, 1);
-
 
             Label nom = new Label("Nom");
             GridPane.setHalignment(nom, HPos.LEFT);
@@ -234,31 +215,47 @@ public class ClientJavaFX extends Application {
             gridPane.add(matriculeText, 1, 4);
 
 
+            // Boutton envoyer
 
-            Button bouton = new Button("envoyer");
+            Button boutonEnvoyer = new Button("envoyer");
 
-            GridPane.setHalignment(bouton, HPos.CENTER);
-            gridPane.add(bouton,1,5);
+            GridPane.setHalignment(boutonEnvoyer, HPos.CENTER);
+            gridPane.add(boutonEnvoyer,1,5);
 
+            boutonEnvoyer.setOnAction(actionEvent -> {
+                String stringPrenom = prenomText.getText();
+                String stringNom = nomText.getText();
+                String stringEmail = emailText.getText();
+                String stringMatricule = matriculeText.getText();
 
+                Course clic =tableView.getSelectionModel().getSelectedItem();
+                String coursTableView = (String) clic.getName();
+                String codeTableView = (String) clic.getCode();
+                //
+                System.out.println(coursTableView);
+                System.out.println(codeTableView);
 
-            //vBox3.getChildren().add(button);
+                try {
+                    RegistrationForm inscription = controleur.inscription(stringPrenom, stringNom, stringEmail, stringMatricule, codeTableView);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+            });
+
 
             vBox3.getChildren().add(gridPane);
-            /////////////////
+
+
+            //// Assemblage des vBoxs,
 
             VBox gauche = new VBox();
             gauche.getChildren().addAll(vBox1,vBox2);
             pane.setLeft(gauche);
 
-
             VBox droite = new VBox();
             droite.getChildren().addAll(vBox3);
             pane.setRight(droite);
-
-            //Scene scene = new Scene(pane,600,380);
-            //Scene scene = new Scene(pane);
-
 
             primaryStage.setTitle("Inscription UdeM");
             primaryStage.setScene(scene);

@@ -36,11 +36,9 @@ public class Controleur {
             e.printStackTrace();
         }
 
-
     }
 
-
-
+    
     /**
      *
      * Fermeture des streams et deconnection du client
@@ -107,39 +105,34 @@ public class Controleur {
      */
     public RegistrationForm inscription(String prenom, String nom, String email, String matricule, String code) throws IOException {
 
-        connect();
+
+        String messageErreur = "";
 
         //Trouver  quoi faire si matricule, courriel ou code cours pas bon
         if (email.length() < 14 || ! email.substring(email.length()-13).equals("@umontreal.ca")) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Erreur courriel");
-            alert.setContentText("Courriel invalide. \n" + " Veuillez entrer une adresse courrielle valide");
-            alert.showAndWait();
-            return null;
-
+            messageErreur += "\nCourriel invalide. \n" + " Veuillez entrer une adresse courrielle valide\n";
         }
 
         // Vérification du matricule
-        if (matricule.length() != 8 && matricule.matches("^[0-9]+$")){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Erreur matricule");
-            alert.setContentText("Matricule incorrect. \n" +" Veuillez saisir un matricule valide");
-            alert.showAndWait();
-            return null;
-
+        if (matricule.length() != 8 || !matricule.matches("^[0-9]+$")){
+            messageErreur += "\n Matricule incorrect. \n" + " Veuillez saisir un matricule valide (8 chiffres)\n";
         }
-
 
 
         Course coursInscrire = trouverCours(listeCours, code);
         if (coursInscrire == null){
+            messageErreur += "\n Formulaire invalide. \n" + " Veuillez selectionner un cours\n";
+        }
+
+        if (!messageErreur.equals("")){
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Erreur cours invalide");
-            alert.setContentText("Formulaire invalide. \n" + " Veuillez selectionner un cours.");
+            alert.setTitle("Erreur durant l'inscription");
+            alert.setContentText(messageErreur);
             alert.showAndWait();
             return null;
-
         }
+
+        connect();
 
         RegistrationForm insc = new RegistrationForm(prenom, nom, email, matricule, coursInscrire);
 
@@ -153,7 +146,9 @@ public class Controleur {
         objOutStream.writeObject(insc);
         objOutStream.flush();
 
+        disconnect();
         return insc;
+
     }
 
     private Course trouverCours(ArrayList<Course> listeCours, String codeATrouver){

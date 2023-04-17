@@ -1,3 +1,4 @@
 Automne	IFT1015	12345678	Marianne	Bouchard	marianne.bouchard@umontreal.ca
 Ete	IFT2256	87654321	Carla	Ivan	carla.ivan@umontreal.ca
 
+Hiver	IFT1025	12345678	asdsa	asd	asda@umontreal.ca

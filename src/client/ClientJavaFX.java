@@ -246,7 +246,6 @@ public class ClientJavaFX extends Application {
                     alert.setContentText("Formulaire invalide. \n" + "Veuillez selectionner un cours.");
                     alert.showAndWait();
 
-
                 }
                 String coursTableView = (String) clic.getName();
                 String codeTableView = (String) clic.getCode();

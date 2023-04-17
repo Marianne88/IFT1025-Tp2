@@ -28,7 +28,7 @@ public class Client {
 
         }
         catch (ConnectException x){
-            System.out.println("Connexion impossible aui port 1337: pas de serveur.");
+            System.out.println("Connexion impossible au port 1337: pas de serveur.");
         }
         catch(IOException e){
             e.printStackTrace();
@@ -155,7 +155,7 @@ public class Client {
         String matricule = sc.nextLine();
 
         // Vérification du matricule
-        while (matricule.length() != 8 && matricule.matches("^[0-9]+$")){
+        while (matricule.length() != 8 || !matricule.matches("^[0-9]+$")){
             System.out.print("Matricule incorrect, veuillez réessayer, veuillez saisir un matricule valide:");
             matricule = sc.nextLine();
         }

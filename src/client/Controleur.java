@@ -1,6 +1,7 @@
 package client;
 
 
+import javafx.scene.control.Alert;
 import server.models.Course;
 import server.models.RegistrationForm;
 
@@ -19,23 +20,6 @@ public class Controleur {
     private ObjectInputStream objInStream;
 
     private ArrayList<Course> listeCours;
-
- //   public void run(){
-
-        //      try{
-
- ///       connect();
-
-        //     }
-        //     catch (ConnectException x){
-        //         System.out.println("Connexion impossible aui port 1337: pas de serveur.");
-        //     }
-        //    catch(ClassNotFoundException e){
-        //        System.out.println("La classe n'existe pas.");
-        //        e.printStackTrace();
-        //  }
-
- //   }
 
 
     private void connect(){
@@ -58,6 +42,12 @@ public class Controleur {
        //connect();
     }
 
+
+    /**
+     *
+     * Fermeture des streams et deconnection du client
+     *
+     */
     public void disconnect(){
         try{
             cS.close();
@@ -70,6 +60,14 @@ public class Controleur {
 
     }
 
+
+    /**
+     *
+     *
+     *
+     * @param session
+     * @return
+     */
 
     public ArrayList<Course> getListeCours(String session) {
         try{
@@ -96,32 +94,61 @@ public class Controleur {
         }
     }
 
+
+    /**
+     *
+     * Recoit les informations de l'etudiant et les verifie pour que l'inscription soit validée.
+     *
+     * @param prenom Prénom de l'etudiant (String)
+     * @param nom Nom de l'étudiant (String)
+     * @param email Email de l'étudiant (String)
+     * @param matricule Matricule de l'étudiant (String)
+     * @param code Code de l'étudiant (string)
+     * @return
+     * @throws IOException Erreur lors de l'éxecution ou l'écriture du fichier
+     */
     public RegistrationForm inscription(String prenom, String nom, String email, String matricule, String code) throws IOException {
 
         connect();
 
         //Trouver  quoi faire si matricule, courriel ou code cours pas bon
         if (email.length() < 14 || ! email.substring(email.length()-13).equals("@umontreal.ca")) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur courriel");
+            alert.setContentText("Courriel invalide. \n" + " Veuillez entrer une adresse courrielle valide");
+            alert.showAndWait();
             return null;
-            //System.out.print("Courriel invalide, veuillez entrer une adresse courrielle valide:");
+
         }
 
         // Vérification du matricule
         if (matricule.length() != 8 && matricule.matches("^[0-9]+$")){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur matricule");
+            alert.setContentText("Matricule incorrect. \n" +" Veuillez saisir un matricule valide");
+            alert.showAndWait();
             return null;
-            //System.out.print("Matricule incorrect, veuillez réessayer, veuillez saisir un matricule valide:");
+
         }
 
 
-        //Course coursInscrire = new Course()
+
         Course coursInscrire = trouverCours(listeCours, code);
         if (coursInscrire == null){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur cours invalide");
+            alert.setContentText("Formulaire invalide. \n" + " Veuillez selectionner un cours.");
+            alert.showAndWait();
             return null;
-            //System.out.print("Cours entré invalide, veuillez entrer un cours qui est disponible pour la session sélectionnée:");
-            //coursInscrire = trouverCours(listeCours, code);
+
         }
 
         RegistrationForm insc = new RegistrationForm(prenom, nom, email, matricule, coursInscrire);
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation inscription");
+        alert.setContentText("Felicitation! " + insc.getPrenom() + " " + insc.getNom() + " est inscrit(e) \n" + "avec succès pour le cours " + coursInscrire.getCode());
+        alert.showAndWait();
 
         Object commandeIns = new String("INSCRIRE");
         objOutStream.writeObject(commandeIns);

@@ -27,6 +27,15 @@ import java.util.ArrayList;
 public class ClientJavaFX extends Application {
 
     private Controleur controleur = new Controleur();
+
+
+    /**
+     *
+     * Création de la fenetre principale
+     *
+     * @param primaryStage Fenetre principale
+     * @throws Exception Exceptions qui peuvent etre rencontrées
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
 
@@ -35,8 +44,10 @@ public class ClientJavaFX extends Application {
 
 
     /**
-     * Assemblage des elements dans l'interface graphique
-     * @param primaryStage
+     *
+     * Assemblage des élements dans l'interface graphique de la fenetre
+     *
+     * @param primaryStage Fenetre principale
      */
     void fenetrePrincipale(Stage primaryStage) {
 
@@ -229,6 +240,14 @@ public class ClientJavaFX extends Application {
                 String stringMatricule = matriculeText.getText();
 
                 Course clic =tableView.getSelectionModel().getSelectedItem();
+                if (clic == null){
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Erreur cours invalide");
+                    alert.setContentText("Formulaire invalide. \n" + "Veuillez selectionner un cours.");
+                    alert.showAndWait();
+
+
+                }
                 String coursTableView = (String) clic.getName();
                 String codeTableView = (String) clic.getCode();
                 //

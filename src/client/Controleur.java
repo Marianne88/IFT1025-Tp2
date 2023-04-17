@@ -38,9 +38,7 @@ public class Controleur {
 
 
     }
-    public Controleur() {
-       //connect();
-    }
+
 
 
     /**
@@ -62,11 +60,11 @@ public class Controleur {
 
 
     /**
+     *Retourne la liste de cours pour une session donnée en paramètres
      *
      *
-     *
-     * @param session
-     * @return
+     * @param session String du nom de la session pour laqielle chercher la liste de cours
+     * @return une arraylist de Course qui représente les cours disponibles pour la session choisie
      */
 
     public ArrayList<Course> getListeCours(String session) {
@@ -104,7 +102,7 @@ public class Controleur {
      * @param email Email de l'étudiant (String)
      * @param matricule Matricule de l'étudiant (String)
      * @param code Code de l'étudiant (string)
-     * @return
+     * @return une RegistrationForm associée à l'inscription de l'étudiant
      * @throws IOException Erreur lors de l'éxecution ou l'écriture du fichier
      */
     public RegistrationForm inscription(String prenom, String nom, String email, String matricule, String code) throws IOException {
